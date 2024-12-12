@@ -39,7 +39,7 @@ if not user_id:
 
 # Load state
 state = load_state()
-user_data = state.get(user_id, {"last_pressed_date": None, "proverb": None})
+user_data = state.get(user_id, {"last_pressed_date": time.strftime("%Y-%m-%d"), "proverb": None})
 
 # Check if button should be disabled
 disabled_button = user_data["last_pressed_date"] == current_date
