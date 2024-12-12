@@ -42,8 +42,7 @@ state = load_state()
 user_data = state.get(user_id, {"last_pressed_date": None, "proverb": None})
 
 # Initialize session state for the button if not already set
-if "disabled_button" not in st.session_state:
-    st.session_state["disabled_button"] = user_data["last_pressed_date"] == current_date
+st.session_state["disabled_button"] = user_data["last_pressed_date"] == current_date
 
 # Display last proverb if available
 if user_data["proverb"] and user_data["last_pressed_date"] == current_date:
