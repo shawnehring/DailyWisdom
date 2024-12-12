@@ -4,52 +4,55 @@ import time
 import json
 
 st.title("Daily Wisdom")
-st.write(
-    "A random proverb from the book of Proverbs per day."
-)
-#Open file
-proverbs = open('new_proverbs.txt','r')
-pick = proverbs.readlines()
-proverbs.close()
+st.write("A random proverb from the book of Proverbs per day.")
 
-#picks the verse
+# Load proverbs from file
+with open('new_proverbs.txt', 'r') as proverbs_file:
+    proverbs = proverbs_file.readlines()
+
+# Function to pick and format a proverb
 def pick_scroll():
-    scroll = random.choice(pick)
-    new_scroll = scroll.strip('\n')
-    return new_scroll
+    scroll = random.choice(proverbs).strip('\n')
+    return scroll
 
-# Load stored data
+# Load stored state
 def load_state():
     try:
         with open('state.json', 'r') as state_file:
             return json.load(state_file)
     except FileNotFoundError:
-        return {"last_pressed_date": time.strftime("%Y-%m-%d"), "proverb": None}
+        return {}
 
-# Save stored data
+# Save state to file
 def save_state(state):
     with open('state.json', 'w') as state_file:
         json.dump(state, state_file)
 
-
-
-#clock part
-state = load_state()
+# Get current date
 current_date = time.strftime("%Y-%m-%d")
 
-#if clock is disabled
-disabled_button = state.get("last_pressed_date") == current_date
+# Prompt user for unique identifier
+user_id = st.text_input("Enter your username or email:", key="user_id")
+if not user_id:
+    st.warning("Please enter your username or email to proceed.")
+    st.stop()
 
+# Load state
+state = load_state()
+user_data = state.get(user_id, {"last_pressed_date": None, "proverb": None})
 
-#creates button
-if st.button('Scroll', key=None, help=None, on_click=None, args=None, kwargs=None, type="secondary", icon='📜', disabled=disabled_button, use_container_width=False):
+# Check if button should be disabled
+disabled_button = user_data["last_pressed_date"] == current_date
+
+# Display last proverb if available
+if user_data["proverb"] and user_data["last_pressed_date"] == current_date:
+    st.write(f"Today's proverb for {user_id}:\n\n{user_data['proverb']}")
+
+# Button to generate a new proverb
+if st.button("Scroll 📜", disabled=disabled_button):
     proverb = pick_scroll()
-    state["last_pressed_date"] = current_date
-    state["proverb"] = proverb
+    user_data["last_pressed_date"] = current_date
+    user_data["proverb"] = proverb
+    state[user_id] = user_data
     save_state(state)
-
-#if already pressed it that day
-if state.get("proverb"):
-    st.write(state["proverb"])
-
-
+    st.write(f"Today's proverb for {user_id}:\n\n{proverb}")
