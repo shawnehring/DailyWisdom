@@ -1,7 +1,8 @@
 import streamlit as st
 import random
-import time
 import json
+from datetime import datetime
+from pytz import timezone
 
 st.title("Daily Wisdom")
 st.write("A random proverb from the book of Proverbs per day.")
@@ -28,13 +29,17 @@ def save_state(state):
     with open('state.json', 'w') as state_file:
         json.dump(state, state_file)
 
-# Get current date
-current_date = time.strftime("%Y-%m-%d")
+# Get current date in CST
+def get_current_date_cst():
+    cst = timezone('US/Central')
+    return datetime.now(cst).strftime("%Y-%m-%d")
+
+current_date = get_current_date_cst()
 
 # Prompt user for unique identifier
-user_id = st.text_input("Enter your username or email:", key="user_id")
+user_id = st.text_input("Enter your name:", key="user_id")
 if not user_id:
-    st.warning("Please enter your username or email to proceed.")
+    st.warning("Please enter your name.")
     st.stop()
 
 # Load global state
@@ -42,7 +47,8 @@ state = load_state()
 user_data = state.get(user_id, {"last_pressed_date": None, "proverb": None})
 
 # Initialize session state for the button if not already set
-st.session_state["disabled_button"] = user_data["last_pressed_date"] == current_date
+if "disabled_button" not in st.session_state:
+    st.session_state["disabled_button"] = user_data["last_pressed_date"] == current_date
 
 # Display last proverb if available
 if user_data["proverb"] and user_data["last_pressed_date"] == current_date:
