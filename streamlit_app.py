@@ -15,11 +15,7 @@ proverbs.close()
 #picks the verse
 def pick_scroll():
     scroll = random.choice(pick)
-    some_scroll = scroll.strip('\n')
-    list_scroll = some_scroll.strip(' ')
-    list_scroll[len(list_scroll)//2:len(list_scroll)//2] = '\n'
-    new_scroll = ' '.join(list_scroll)
-    st.write(new_scroll)
+    new_scroll = scroll.strip('\n')
     return new_scroll
 
 # Load stored data
