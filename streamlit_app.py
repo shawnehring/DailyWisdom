@@ -21,7 +21,7 @@ def load_state():
         with open('state.json', 'r') as state_file:
             return json.load(state_file)
     except FileNotFoundError:
-        return {}
+        return {"last_pressed_date": time.strftime("%Y-%m-%d"), "proverb": None}
 
 # Save state to file
 def save_state(state):
