@@ -46,22 +46,12 @@ if not user_id:
 state = load_state()
 user_data = state.get(user_id, {"last_pressed_date": None, "proverb": None})
 
-# Initialize session state for the button if not already set
-if "disabled_button" not in st.session_state:
-    st.session_state["disabled_button"] = user_data["last_pressed_date"] == current_date
-
 # Display last proverb if available
-if user_data["proverb"] and user_data["last_pressed_date"] == current_date:
-    st.write(f"Today's proverb for {user_id}:\n\n{user_data['proverb']}")
-
-# Button to generate a new proverb
-if st.button("Scroll 📜", disabled=st.session_state["disabled_button"]):
+if user_data["last_pressed_date"] != current_date:
     proverb = pick_scroll()
     user_data["last_pressed_date"] = current_date
     user_data["proverb"] = proverb
     state[user_id] = user_data
     save_state(state)
 
-    # Disable the button for the current session
-    st.session_state["disabled_button"] = True
-    st.write(f"Today's proverb for {user_id}:\n\n{proverb}")
+st.write(f"Today's proverb for {user_id}:\n\n{user_data['proverb']}")
