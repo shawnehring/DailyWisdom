@@ -21,7 +21,8 @@ def load_state():
     try:
         with open('state.json', 'r') as state_file:
             return json.load(state_file)
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Log or notify about the issue and return a default state
         return {}
 
 # Save state to file
