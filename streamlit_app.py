@@ -37,7 +37,7 @@ def get_current_date_cst():
 current_date = get_current_date_cst()
 
 # Prompt user for unique identifier
-user_id = st.text_input("Enter your name:", key="user_id")
+user_id = st.text_input("Enter your name:", key="user_id").lower()
 if not user_id:
     st.warning("Please enter your name.")
     st.stop()
